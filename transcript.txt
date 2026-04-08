@@ -1,0 +1,955 @@
+[User]
+Why i am seeing this: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0".
+(08/04/2026 21:33)
+
+[Kodee]
+Aliyu, you’re seeing that because **Composer is running with a PHP version lower than 8.3**, while your project’s `composer.json` requires **PHP `>= 8.3.0`**.
+
+On Hostinger, **SSH/Composer uses the hosting plan’s default PHP**, which can be different from the PHP version set for your website. Fix it by doing one of these:
+
+- **Run Composer with a specific PHP 8.3+ binary** (example for PHP 8.4):
+  ```
+  /opt/alt/php84/usr/bin/php /usr/local/bin/composer2 update
+  ```
+  (Replace `php84` with the PHP version you have available, e.g., `php83`, `php84`.)
+
+- Or **change the hosting plan’s PHP version** to 8.3+ (then rerun Composer).
+
+If you tell me your domain (or the folder you run Composer from), I can point you to the exact PHP version available on your hosting and the exact command to use.
+(08/04/2026 21:33)
+
+[User]
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update
+Composer could not find a composer.json file in /home/u832245696
+To initialize a project, please create a composer.json file. See https://getcomposer.org/basic-usage
+(08/04/2026 21:38)
+
+[Kodee]
+Aliyu, that message means you ran the command in **`/home/u832245696`**, but your project’s **`composer.json` isn’t in that folder**.
+
+Run Composer from the folder that contains `composer.json` (usually your site root), e.g.:
+
+1) Find it:
+```
+cd ~
+find . -maxdepth 5 -name composer.json
+```
+
+2) Go to the folder it reports (example):
+```
+cd domains/YOURDOMAIN/public_html
+```
+
+3) Run update there:
+```
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update
+```
+
+If you paste the output of the `find` command, I’ll tell you the exact `cd` path to use.
+(08/04/2026 21:39)
+
+[User]
+[u832245696@us-phx-web1202 ~]$ find . -maxdepth 5 -name composer.json
+./domains/salkabinternational.yumitsolutions.com/public_html/composer.json
+./domains/gsssgusau.yumitsolutions.com/public_html/composer.json
+./domains/alilmu.marafco.com/public_html/composer.json
+./domains/jsa.yumitsolutions.com/public_html/composer.json
+./domains/app.ruxxengas.com/public_html/composer.json
+./domains/daibahislamiccenter.marafco.com/public_html/composer.json
+./domains/desk.yumitsolutions.com/public_html/composer.json
+./domains/demo.mcdfoundation.org/public_html/composer.json
+./domains/c2c.mcdfoundation.org/public_html/composer.json
+./domains/sarkinyaki.yumitsolutions.com/public_html/composer.json
+./domains/portal.cshtgusau.com/public_html/composer.json
+./domains/app.ankshipping.com/public_html/composer.json
+./domains/marafco.com/public_html/helpers/composer.json
+./domains/portal.alilmunce.com/public_html/composer.json
+./domains/abbatextiles.yumitsolutions.com/public_html/composer.json
+./domains/baytali
+(08/04/2026 21:44)
+
+[Kodee]
+Aliyu, you have multiple projects—run Composer inside the one you want to update (the folder that contains its `composer.json`).
+
+Example (pick one from your list), then run:
+```bash
+cd ~/domains/portal.alilmunce.com/public_html
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update
+```
+
+If your dependencies require **PHP >= 8.3**, PHP 8.3 is OK; if you still get a PHP version error, try PHP 8.4:
+```bash
+/opt/alt/php84/usr/bin/php /usr/local/bin/composer2 update
+```
+
+Tell me which domain/app you’re updating (e.g., `portal.alilmunce.com`, `portal.cshtgusau.com`, etc.) and paste the exact error if it continues.
+(08/04/2026 21:45)
+
+[User]
+app.ankshipping.com and ther error is Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0".
+(08/04/2026 21:48)
+
+[Kodee]
+Aliyu, that means Composer is still running under a PHP version **below 8.3** (even if you used the php83 path, something is forcing a different PHP).
+
+Run these in the project folder and paste the output:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+
+/opt/alt/php83/usr/bin/php -v
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 -V
+/opt/alt/php84/usr/bin/php -v
+/opt/alt/php84/usr/bin/php /usr/local/bin/composer2 update
+```
+
+If the php84 command works, stick with php84 for Composer on this project; if it still fails, the outputs above will show exactly which PHP Composer is actually using.
+(08/04/2026 21:49)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php83/usr/bin/php -v
+PHP 8.3.30 (cli) (built: Mar  8 2026 20:07:33) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.3.30, Copyright (c) Zend Technologies
+    with Zend OPcache v8.3.30, Copyright (c), by Zend Technologies
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 -V
+Composer version 2.8.11 2025-08-21 11:29:39
+PHP version 8.3.30 (/opt/alt/php83/usr/bin/php)
+Run the "diagnose" command to get more detailed diagnostics output.
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php84/usr/bin/php -v
+PHP 8.4.19 (cli) (built: Mar 12 2026 17:06:13) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.4.19, Copyright (c) Zend Technologies
+    with Zend OPcache v8.4.19, Copyright (c), by Zend Technologies
+(08/04/2026 21:52)
+
+[Kodee]
+Aliyu, your CLI Composer **is** using PHP **8.3.30**, so the “require PHP >= 8.3.0” warning shouldn’t be triggered by PHP itself—this usually happens when **the project’s `composer.json`/lock or a config is forcing an older PHP platform**.
+
+Run these in `~/domains/app.ankshipping.com/public_html` and paste the output:
+
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 check-platform-reqs
+
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 config -l | grep -i platform
+
+cat composer.json | grep -n '"php"' -n
+```
+
+If you see something like `config.platform.php` set to `8.2`/`8.1`, remove it:
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 config --unset platform.php
+```
+
+Then rerun:
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update
+```
+(08/04/2026 21:52)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 check-platform-reqs
+Checking platform requirements for packages in the vendor dir
+composer-plugin-api  2.6.0      success                                       
+composer-runtime-api 2.2.2      success                                       
+ext-ctype            *          success provided by symfony/polyfill-ctype    
+ext-date             8.3.30     success                                       
+ext-dom              20031129   success                                       
+ext-fileinfo         8.3.30     success                                       
+ext-filter           8.3.30     success                                       
+ext-hash             8.3.30     success                                       
+ext-iconv            8.3.30     success                                       
+ext-json             8.3.30     success                                       
+ext-libxml           8.3.30     suc
+(08/04/2026 21:54)
+
+[Kodee]
+That output shows **your current installed packages are OK on PHP 8.3**—so the warning is coming from **Composer reading a “platform PHP” override** (or a PHP requirement in `composer.json`) when you run `update`.
+
+Please run these (same folder) and paste the results:
+
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 config -l | grep -i platform
+
+grep -nE '"php"\s*:' composer.json
+```
+
+If you see something like `platform.php = 8.1.x/8.2.x`, remove it and retry:
+
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 config --unset platform.php
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update
+```
+(08/04/2026 21:54)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 config -l | grep -i platform
+[platform-check] php-only
+[u832245696@us-phx-web1202 public_html]$ grep -nE '"php"\s*:' composer.json
+12:        "php": "^8.3",
+(08/04/2026 21:56)
+
+[Kodee]
+Your `composer.json` is correct (`"php": "^8.3"`), and there’s **no `platform.php` override**. In this case the warning is almost always caused by **an old `composer.lock` and/or `vendor/` generated under a lower PHP**, and Composer is still validating against that state.
+
+Run this cleanup + full re-resolve in the same folder:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+
+rm -rf vendor composer.lock
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 clear-cache
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install
+```
+
+If it still shows the same warning, paste the exact `composer2 update` output lines around the warning (first ~30 lines), and also:
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 diagnose | sed -n '1,80p'
+```
+(08/04/2026 21:56)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 diagnose | sed -n '1,80p'
+Checking composer.json: OK
+Checking composer.lock: OK
+Checking platform settings: OK
+Checking git settings: OK git version 2.43.7
+Checking http connectivity to packagist: OK
+Checking https connectivity to packagist: OK
+Checking github.com rate limit: OK
+Checking disk free space: OK
+Checking pubkeys: FAIL
+Missing pubkey for tags verification
+Missing pubkey for dev verification
+Run composer self-update --update-keys to set them up
+Checking Composer version: You are not running the latest stable version, run `composer self-update` to update (2.8.11 => 2.9.5)
+Checking Composer and its dependencies for vulnerabilities: WARNING
+Audit found some issues:
+Found 2 security vulnerability advisories affecting 2 packages:
++-------------------+----------------------------------------------------------------------------------+
+| Package           | composer/composer
+(08/04/2026 22:09)
+
+[Kodee]
+Your PHP version is fine; `diagnose` confirms platform settings are OK. The remaining “PHP >= 8.3.0” message is most likely coming from **a script/command that runs `composer` with the server default `php` (older) instead of `/opt/alt/php83/usr/bin/php`**, or from a **different directory** than `~/domains/app.ankshipping.com/public_html`.
+
+Run these and paste the output:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+
+which php
+php -v
+
+which composer
+composer -V 2>/dev/null || true
+
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update -vvv | sed -n '1,60p'
+```
+
+If `php -v` shows < 8.3, then always run Composer like this (or update your PATH/alias):
+```bash
+alias composer='/opt/alt/php83/usr/bin/php /usr/local/bin/composer2'
+```
+(08/04/2026 22:09)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ which php
+/usr/bin/php
+[u832245696@us-phx-web1202 public_html]$ php -v
+PHP 7.3.33 (cli) (built: Mar  8 2026 18:56:51) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.3.33, Copyright (c) 1998-2018 Zend Technologies
+    with the ionCube PHP Loader + ionCube24 v15.5.0, Copyright (c) 2002-2026, by ionCube Ltd.
+    with Zend OPcache v7.3.33, Copyright (c) 1999-2018, by Zend Technologies
+[u832245696@us-phx-web1202 public_html]$ which composer
+/usr/local/bin/composer
+[u832245696@us-phx-web1202 public_html]$ composer -V 2>/dev/null || true
+Composer version 2.8.11 2025-08-21 11:29:39
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update -vvv | sed -n '1,60p'
+Running 2.8.11 (2025-08-21 11:29:39) with PHP 8.3.30 on Linux / 4.18.0-553.84.1.lve.el8.x86_64
+Reading ./composer.json (/home/u832245696/domains/app.ankshipping.com/public_html/composer.json)
+Loading config file ./composer.json (/home/u832245
+(08/04/2026 22:14)
+
+[Kodee]
+That’s the cause: your default CLI `php` is **7.3** (`/usr/bin/php`). Whenever something runs plain `composer` (or a Composer script uses `#!/usr/bin/php`), it triggers the “needs PHP >= 8.3” message.
+
+Use one of these fixes:
+
+1) **Always run Composer with PHP 8.3** (recommended):
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update
+```
+
+2) **Make `composer` use PHP 8.3 in your shell**:
+```bash
+echo "alias composer='/opt/alt/php83/usr/bin/php /usr/local/bin/composer2'" >> ~/.bashrc
+source ~/.bashrc
+```
+
+3) If the error appears during deployments/scripts, update that script/cron to call:
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install
+```
+
+If you tell me where you’re seeing the warning (SSH command, cron job, Git deploy, web request), I’ll point out the exact place to change.
+(08/04/2026 22:14)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ php -v
+PHP 7.3.33 (cli) (built: Mar  8 2026 18:56:51) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.3.33, Copyright (c) 1998-2018 Zend Technologies
+    with the ionCube PHP Loader + ionCube24 v15.5.0, Copyright (c) 2002-2026, by ionCube Ltd.
+    with Zend OPcache v7.3.33, Copyright (c) 1999-2018, by Zend Technologies
+(08/04/2026 22:18)
+
+[Kodee]
+Yes—your default SSH `php` points to **PHP 7.3** (`/usr/bin/php`), so any command that uses plain `php`/`composer` will use 7.3.
+
+Use PHP 8.3 explicitly (works immediately):
+```bash
+/opt/alt/php83/usr/bin/php -v
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 update
+```
+
+If you want `php` to be 8.3 in SSH for future sessions, add aliases:
+```bash
+echo "alias php='/opt/alt/php83/usr/bin/php'" >> ~/.bashrc
+echo "alias composer='/opt/alt/php83/usr/bin/php /usr/local/bin/composer2'" >> ~/.bashrc
+source ~/.bashrc
+```
+
+After that, `php -v` should show 8.3 and `composer update` should stop complaining.
+(08/04/2026 22:18)
+
+[User]
+in which dir?
+(08/04/2026 22:20)
+
+[Kodee]
+Run those commands in your account home directory (works from anywhere), e.g.:
+
+```bash
+cd ~
+echo "alias php='/opt/alt/php83/usr/bin/php'" >> ~/.bashrc
+echo "alias composer='/opt/alt/php83/usr/bin/php /usr/local/bin/composer2'" >> ~/.bashrc
+source ~/.bashrc
+```
+
+Then go to your project directory to run Composer:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+composer update
+```
+(08/04/2026 22:20)
+
+[User]
+Deployment start
+Repository https://github.com/usoofali/demo.git
+Checking project directory is empty
+Project directory is git repository
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   composer.lock
+	modified:   vendor/autoload.php
+	modified:   vendor/bin/sail
+	modified:   vendor/composer/autoload_real.php
+	modified:   vendor/composer/autoload_static.php
+	modified:   vendor/composer/installed.php
+	modified:   vendor/hamcrest/hamcrest-php/.gitattributes
+	modified:   vendor/livewire/livewire/LICENSE.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Looking for composer.lock file
+Found composer.lock file. Updating hash..
+update: Your requirements could not be resolved to an installable set of packages.
+Deployment failed
+(08/04/2026 22:40)
+
+[Kodee]
+Your deployment is failing because the repo has **dirty changes** (you committed `vendor/` and the deploy process also rewrites `composer.lock`). Fix it like this:
+
+1) **Remove `vendor/` from Git and ignore it**
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+echo "/vendor/" >> .gitignore
+git rm -r --cached vendor
+git add .gitignore composer.lock
+git commit -m "Ignore vendor and keep composer.lock"
+git push
+```
+
+2) **Redeploy** from hPanel Git.
+
+If it still fails with “requirements could not be resolved…”, paste the lines *right after* that message (it will list the exact package/version conflict).
+(08/04/2026 22:40)
+
+[User]
+check composer version update to the latest
+(08/04/2026 23:09)
+
+[Kodee]
+Run this with PHP 8.3 to update Composer to the latest version on your hosting:
+
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 self-update
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 -V
+```
+
+If it says it can’t overwrite `/usr/local/bin/composer2`, use a local Composer in your project folder instead.
+(08/04/2026 23:09)
+
+[User]
+[u832245696@us-phx-web1202 ~]$ /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 self-update
+Upgrading to version 2.9.5 (stable channel).
+   
+
+In SelfUpdateCommand.php line 496:
+                                                                                   
+  Filesystem exception:                                                            
+  Composer update failed: "/usr/local/bin/composer2.phar" could not be written.    
+  rename(/usr/local/bin/composer2.phar): Failed to open stream: Permission denied  
+                                                                                   
+
+self-update [-r|--rollback] [--clean-backups] [--no-progress] [--update-keys] [--stable] [--preview] [--snapshot] [--1] [--2] [--2.2] [--set-channel-only] [--] [<version>]
+(08/04/2026 23:11)
+
+[Kodee]
+You can’t update the server-wide `/usr/local/bin/composer2` (no write permissions). Install/update **Composer locally** in your project and use that.
+
+In your project folder:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+
+php composer.phar -V
+php composer.phar self-update --2
+```
+
+Then run Composer via the local file:
+```bash
+/opt/alt/php83/usr/bin/php composer.phar update
+```
+
+To fix the “Missing pubkey…” warning:
+```bash
+/opt/alt/php83/usr/bin/php composer.phar self-update --update-keys
+```
+(08/04/2026 23:11)
+
+[User]
+All my prevoius project with php82 are working fine, but this one is not
+(08/04/2026 23:15)
+
+[Kodee]
+This project **requires PHP 8.3** (`"php": "^8.3"`), but your account’s default SSH `php` is **7.3**, and many deploy hooks run plain `php`/`composer`—your older PHP 8.2 projects likely didn’t hit that requirement.
+
+Fix: in your Git deployment script (or any deploy commands), run Composer with PHP 8.3 explicitly, for example:
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-dev --prefer-dist --no-interaction
+```
+
+Also ensure you’re **not committing `vendor/`** (it caused the “changes not staged” during deploy); remove it from Git and add `/vendor/` to `.gitignore`, then push and redeploy.
+(08/04/2026 23:15)
+
+[User]
+and node modules
+(08/04/2026 23:16)
+
+[Kodee]
+Don’t commit `node_modules/` either—add it to `.gitignore` and remove it from the repo cache:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+echo "/node_modules/" >> .gitignore
+git rm -r --cached node_modules
+git add .gitignore
+git commit -m "Ignore node_modules"
+git push
+```
+
+On deployment, install them on the server only if your deploy pipeline runs Node:
+```bash
+npm ci
+npm run build
+```
+(08/04/2026 23:17)
+
+[User]
+[u832245696@us-phx-web1202 ~]$ cd domains/
+[u832245696@us-phx-web1202 domains]$ cd app.ankshipping.com/
+[u832245696@us-phx-web1202 app.ankshipping.com]$ cd public_html/
+[u832245696@us-phx-web1202 public_html]$
+(08/04/2026 23:34)
+
+[Kodee]
+You’re in the right directory now: `~/domains/app.ankshipping.com/public_html`.
+
+From here, remove `vendor/` and `node_modules/` from Git and ignore them:
+
+```bash
+echo -e "/vendor/\n/node_modules/" >> .gitignore
+git rm -r --cached vendor node_modules 2>/dev/null || true
+git add .gitignore composer.lock
+git commit -m "Ignore vendor and node_modules"
+git push
+```
+
+Then redeploy, and make sure the deploy step runs Composer with PHP 8.3:
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-dev --prefer-dist --no-interaction
+```
+(08/04/2026 23:34)
+
+[User]
+update composer to latest for the project
+(08/04/2026 23:35)
+
+[Kodee]
+In `~/domains/app.ankshipping.com/public_html`, install/update a **project-local Composer** (since the global one can’t be updated):
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+
+/opt/alt/php83/usr/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+/opt/alt/php83/usr/bin/php composer-setup.php
+/opt/alt/php83/usr/bin/php -r "unlink('composer-setup.php');"
+
+# update local composer to latest stable
+/opt/alt/php83/usr/bin/php composer.phar self-update --2
+/opt/alt/php83/usr/bin/php composer.phar -V
+```
+(08/04/2026 23:35)
+
+[User]
+on run which composer is run for my proejct
+(08/04/2026 23:39)
+
+[Kodee]
+In your project, `composer` runs whatever is first in your `PATH` (on your server that’s `/usr/local/bin/composer`), and it uses the default CLI PHP unless you explicitly call another PHP binary.
+
+To see exactly what will run from `~/domains/app.ankshipping.com/public_html`:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+type -a composer
+which composer
+composer -V
+composer -n about | sed -n '1,5p'
+```
+
+If you run local Composer, it’s this file:
+```bash
+/opt/alt/php83/usr/bin/php ./composer.phar -V
+```
+(08/04/2026 23:39)
+
+[User]
+I have done evrything possible this error Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0". for https://app.ankshipping.com persists. Wht the next move?
+(08/04/2026 23:43)
+
+[Kodee]
+That message means **Composer is still being executed with a PHP binary < 8.3** (often the deploy hook uses plain `php`).
+
+Next move (forces PHP 8.3 everywhere for this project):
+
+1) **Regenerate the lock/vendor using PHP 8.3**
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+rm -rf vendor
+/opt/alt/php83/usr/bin/php ./composer.phar install --no-interaction
+```
+
+2) **Make the website (not only SSH) use PHP 8.3 in hPanel**  
+If you tell me the domain you’re changing (**app.ankshipping.com** or **marafco.com**?), I’ll set the site PHP to **8.3** for that vhost.
+
+3) If it fails during **Git Deployment**, edit the deploy command to use:
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-interaction
+```
+
+Paste the output of these two commands and I’ll pinpoint what’s still using the old PHP:
+```bash
+php -v
+/opt/alt/php83/usr/bin/php -v
+```
+(08/04/2026 23:43)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ php -v
+PHP 7.3.33 (cli) (built: Mar  8 2026 18:56:51) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.3.33, Copyright (c) 1998-2018 Zend Technologies
+    with the ionCube PHP Loader + ionCube24 v15.5.0, Copyright (c) 2002-2026, by ionCube Ltd.
+    with Zend OPcache v7.3.33, Copyright (c) 1999-2018, by Zend Technologies
+[u832245696@us-phx-web1202 public_html]$ /opt/alt/php83/usr/bin/php -v
+PHP 8.3.30 (cli) (built: Mar  8 2026 20:07:33) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.3.30, Copyright (c) Zend Technologies
+    with Zend OPcache v8.3.30, Copyright (c), by Zend Technologies
+(08/04/2026 23:48)
+
+[Kodee]
+Aliyu, your website **app.ankshipping.com is already set to PHP 8.3**, but your **SSH/CLI default `php` is 7.3**—so when deploy scripts run `php`/`composer` without a full path, Composer sees PHP 7.3 and throws that `>= 8.3.0` error.
+
+Use PHP 8.3 explicitly for Composer in this project (and in any Git deploy hook):
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+/opt/alt/php83/usr/bin/php ./composer.phar install --no-interaction
+# or
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-interaction
+```
+
+Also, check what deploy is calling; if you see plain `php` anywhere, replace it with `/opt/alt/php83/usr/bin/php`:
+```bash
+which php
+type -a composer
+```
+(08/04/2026 23:48)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ which php
+/usr/bin/php
+[u832245696@us-phx-web1202 public_html]$ type -a composer
+composer is /usr/local/bin/composer
+(08/04/2026 23:53)
+
+[Kodee]
+Your deploy/CLI is using **PHP 7.3** (`/usr/bin/php`) and the **global Composer** (`/usr/local/bin/composer`), so the fix is to force PHP 8.3 (or make your shell default to it).
+
+Run Composer with PHP 8.3 explicitly:
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-interaction
+```
+
+If your Git deployment runs `composer install`, change the command there to the exact line above.
+
+Optional (makes `php` default to 8.3 in SSH sessions):
+```bash
+echo 'alias php=/opt/alt/php83/usr/bin/php' >> ~/.bashrc
+echo 'alias composer="php /usr/local/bin/composer2"' >> ~/.bashrc
+source ~/.bashrc
+```
+(08/04/2026 23:53)
+
+[User]
+still persists, I think this is structural flaw on hpanel
+(08/04/2026 23:57)
+
+[Kodee]
+It’s not an hPanel flaw—your **deploy step is still invoking `/usr/bin/php` (7.3)** somewhere, so Composer keeps checking the wrong PHP.
+
+Run these and paste the output:
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+head -n 50 /usr/local/bin/composer2
+grep -RIn --exclude-dir=.git "composer|php" . | head -n 50
+```
+
+Meanwhile, force it at the project level by adding a wrapper and using it in deploy:
+
+```bash
+cat > ~/domains/app.ankshipping.com/public_html/composer83 <<'EOF'
+#!/bin/sh
+exec /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 "$@"
+EOF
+chmod +x ~/domains/app.ankshipping.com/public_html/composer83
+```
+
+Then run:
+```bash
+./composer83 install --no-interaction
+```
+(08/04/2026 23:57)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ head -n 50 /usr/local/bin/composer2
+#!/usr/bin/env php
+<?php
+/*
+ * This file is part of Composer.
+ *
+ * (c) Nils Adermann <naderman@naderman.de>
+ *     Jordi Boggiano <j.boggiano@seld.be>
+ *
+ * For the full copyright and license information, please view
+ * the license that is located at the bottom of this file.
+ */
+
+// Avoid APC causing random fatal errors per https://github.com/composer/composer/issues/264
+if (extension_loaded('apc') && filter_var(ini_get('apc.enable_cli'), FILTER_VALIDATE_BOOLEAN) && filter_var(ini_get('apc.cache_by_default'), FILTER_VALIDATE_BOOLEAN)) {
+    if (version_compare(phpversion('apc'), '3.0.12', '>=')) {
+        ini_set('apc.cache_by_default', 0);
+    } else {
+        fwrite(STDERR, 'Warning: APC <= 3.0.12 may cause fatal errors when running composer commands.'.PHP_EOL);
+        fwrite(STDERR, 'Update APC, or set apc.enable_cli or apc.cache_by_default to 0 in your php.ini.'.PHP_EOL);
+    }
+}
+
+if (!class_exists('Phar
+(08/04/2026 23:59)
+
+[Kodee]
+`composer2` starts with `#!/usr/bin/env php`, so when you run `composer2` (or anything that calls it), it will use **the first `php` in PATH** — on your SSH it’s `/usr/bin/php` (7.3). That’s why the error persists.
+
+Fix it by ensuring Composer is executed with PHP 8.3:
+
+**Option A (recommended): always run composer via PHP 8.3**
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-interaction
+```
+
+**Option B: make `php` in your SSH session point to 8.3**
+```bash
+echo 'export PATH=/opt/alt/php83/usr/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+php -v
+composer2 -V
+```
+
+After Option B, `composer2` will also use PHP 8.3 because `/usr/bin/env php` will resolve to the 8.3 binary first.
+(08/04/2026 23:59)
+
+[User]
+I updated my .bashrc, can you check if php -v now shows 8.3?
+(09/04/2026 00:00)
+
+[Kodee]
+I can’t see your SSH session output from here. Run this and paste the result:
+
+```bash
+source ~/.bashrc
+which php
+php -v
+/usr/bin/env php -v
+composer2 -V
+```
+(09/04/2026 00:00)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ source ~/.bashrc
+[u832245696@us-phx-web1202 public_html]$ which php
+alias php='/opt/alt/php83/usr/bin/php'
+	/opt/alt/php83/usr/bin/php
+(09/04/2026 00:01)
+
+[Kodee]
+Yes — `php` now resolves to **/opt/alt/php83/usr/bin/php** (PHP 8.3).
+
+Run these to confirm end-to-end (they should all show 8.3) and then reinstall dependencies:
+
+```bash
+php -v
+/usr/bin/env php -v
+composer2 -V
+composer2 install --no-interaction
+```
+(09/04/2026 00:02)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ php -v
+PHP 8.3.30 (cli) (built: Mar  8 2026 20:07:33) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.3.30, Copyright (c) Zend Technologies
+    with Zend OPcache v8.3.30, Copyright (c), by Zend Technologies
+[u832245696@us-phx-web1202 public_html]$ /usr/bin/env php -v
+PHP 7.3.33 (cli) (built: Mar  8 2026 18:56:51) ( NTS )
+Copyright (c) 1997-2018 The PHP Group
+Zend Engine v3.3.33, Copyright (c) 1998-2018 Zend Technologies
+    with the ionCube PHP Loader + ionCube24 v15.5.0, Copyright (c) 2002-2026, by ionCube Ltd.
+    with Zend OPcache v7.3.33, Copyright (c) 1999-2018, by Zend Technologies
+[u832245696@us-phx-web1202 public_html]$ composer2 -V
+Composer version 2.8.11 2025-08-21 11:29:39
+PHP version 7.3.33 (/opt/alt/php73/usr/bin/php)
+Run the "diagnose" command to get more detailed diagnostics output.
+[u832245696@us-phx-web1202 public_html]$ composer2 install --no-interaction
+Installing dependencies from lock file (including require-dev)
+Verifying
+(09/04/2026 00:04)
+
+[Kodee]
+`php` is 8.3 because it’s an **alias**, but `composer2` still uses **PHP 7.3** because its shebang `#!/usr/bin/env php` ignores aliases and resolves `php` from your **PATH** (which still finds 7.3 first). That’s why `/usr/bin/env php -v` shows 7.3.
+
+Fix by putting PHP 8.3 **first in PATH** (not alias), then reopen/reload shell:
+
+```bash
+# remove/ignore the alias line if you added it
+sed -i '/alias php=\/opt\/alt\/php83\/usr\/bin\/php/d' ~/.bashrc
+
+# add PATH export
+echo 'export PATH=/opt/alt/php83/usr/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+hash -r
+```
+
+Verify:
+```bash
+which -a php
+/usr/bin/env php -v
+composer2 -V
+```
+
+If you want an immediate workaround without changing PATH, always run:
+```bash
+/opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-interaction
+```
+(09/04/2026 00:04)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ composer2 -V
+Composer version 2.8.11 2025-08-21 11:29:39
+PHP version 8.3.30 (/opt/alt/php83/usr/bin/php)
+Run the "diagnose" command to get more detailed diagnostics output.
+(09/04/2026 00:11)
+
+[Kodee]
+Perfect — Composer is now running on **PHP 8.3.30**, so that platform error should be gone.
+
+Now rerun in your project folder:
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+composer2 install --no-interaction
+```
+
+If you still see the same message, paste the exact error output and the command you run that triggers it (browser, Git deploy, cron, etc.).
+(09/04/2026 00:11)
+
+[User]
+update composer to latest
+(09/04/2026 00:12)
+
+[Kodee]
+On Hostinger, the **global Composer can’t be self-updated**. To get the latest, install Composer **locally** in your project and use that.
+
+1) Go to your site root:
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+```
+
+2) Download Composer locally:  
+![image](https://www.hostinger.com/support/wp-content/uploads/sites/55/2023/12/4fe80994-c79e-457f-b51e-98df39dc13fe.jpg)  
+![image](https://www.hostinger.com/support/wp-content/uploads/sites/55/2023/12/1eb28519-0fdf-4c3f-8813-5ee127cc02ec.jpg)
+
+3) Update that local Composer to the latest v2:
+```bash
+/opt/alt/php83/usr/bin/php composer.phar self-update --2
+```
+
+4) Use it going forward:
+```bash
+/opt/alt/php83/usr/bin/php composer.phar install
+```
+(09/04/2026 00:12)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+[u832245696@us-phx-web1202 public_html]$ php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f1299666e39d511ff056b5653d1c073993c44249a21239c8115486d') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+Installer corrupt
+[u832245696@us-phx-web1202 public_html]$ php composer-setup.php
+Could not open input file: composer-setup.php
+[u832245696@us-phx-web1202 public_html]$ php -r "unlink('composer-setup.php');"
+
+Warning: unlink(composer-setup.php): No such file or directory in Command line code on line 1
+[u832245696@us-phx-web1202 public_html]$
+(09/04/2026 00:17)
+
+[Kodee]
+The hash you pasted is **old**, so verification correctly fails (the installer changes often). Do it with the **current hash fetched live**, then install:
+
+```bash
+cd ~/domains/app.ankshipping.com/public_html
+
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+EXPECTED="$(php -r "echo trim(file_get_contents('https://composer.github.io/installer.sig'));")"
+php -r "if (hash_file('sha384','composer-setup.php') === '$EXPECTED') { echo 'Installer verified'.PHP_EOL; } else { echo 'Installer corrupt'.PHP_EOL; unlink('composer-setup.php'); }"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+```
+
+Then use the new local Composer:
+```bash
+php composer.phar -V
+php composer.phar install
+```
+(09/04/2026 00:17)
+
+[User]
+still: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.3.0".
+(09/04/2026 00:20)
+
+[Kodee]
+That message means Composer is still being executed with **PHP < 8.3** at the moment you run it (often via `/usr/bin/env php` or a deploy script), even if `php -v` shows 8.3 sometimes.
+
+Run these and paste the output:
+```bash
+which -a php
+/usr/bin/env php -v
+php -v
+php composer.phar -V
+/usr/bin/env php composer.phar -V
+composer2 -V
+```
+
+Immediate workaround (forces 8.3 no matter what):
+```bash
+/opt/alt/php83/usr/bin/php ~/domains/app.ankshipping.com/public_html/composer.phar install --no-interaction
+```
+(09/04/2026 00:20)
+
+[User]
+[u832245696@us-phx-web1202 public_html]$ which -a php
+alias php='/opt/alt/php83/usr/bin/php'
+	/opt/alt/php83/usr/bin/php
+/opt/alt/php83/usr/bin/php
+/usr/bin/php
+[u832245696@us-phx-web1202 public_html]$ /usr/bin/env php -v
+PHP 8.3.30 (cli) (built: Mar  8 2026 20:07:33) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.3.30, Copyright (c) Zend Technologies
+    with Zend OPcache v8.3.30, Copyright (c), by Zend Technologies
+[u832245696@us-phx-web1202 public_html]$ php -v
+PHP 8.3.30 (cli) (built: Mar  8 2026 20:07:33) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.3.30, Copyright (c) Zend Technologies
+    with Zend OPcache v8.3.30, Copyright (c), by Zend Technologies
+[u832245696@us-phx-web1202 public_html]$ php composer.phar -V
+Composer version 2.9.5 2026-01-29 11:40:53
+PHP version 8.3.30 (/opt/alt/php83/usr/bin/php)
+Run the "diagnose" command to get more detailed diagnostics output.
+[u832245696@us-phx-web1202 public_html]$ /usr/bin/env php composer.phar -V
+Composer version 2.9.5 2026-01-2
+(09/04/2026 00:21)
+
+[Kodee]
+All your **CLI checks are clean** now (`/usr/bin/env php` and `composer.phar` both use **PHP 8.3.30**). So the “requires PHP >= 8.3.0” error is coming from a **different execution context** (most commonly: Git auto-deploy, a cron job, or another directory using a different Composer/`vendor/` setup).
+
+Run in the exact folder where you run `install` and paste output:
+```bash
+pwd
+ls -la composer.json composer.lock vendor 2>/dev/null
+php -r 'echo PHP_VERSION, PHP_EOL;'
+php composer.phar install -vvv --no-interaction
+```
+
+If this error happens during **Git deployment**, update the deploy command to force PHP 8.3:
+```bash
+/opt/alt/php83/usr/bin/php composer.phar install --no-interaction
+```
+and paste the deploy log line that shows the error.
+(09/04/2026 00:21)
